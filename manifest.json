@@ -10,7 +10,7 @@
     "default_title": "Click here!"
   },
   "background": {
-    "scripts": ["jquery-2.1.4.min.js","background.js"]//,
+    "scripts": ["jquery-2.1.4.min.js","bluebird.min.js","background.js"]//,
     //"persistent": false
   },
   "permissions": [
@@ -20,7 +20,7 @@
         "https://*.google.com/*",
         "https://ssl.gstatic.com/",
         "https://www.googleapis.com/",
-        "http://localhost:1337/",
+        "http://localhost:3000/",
         "https://accounts.google.com/"
     ],
   "oauth2": {

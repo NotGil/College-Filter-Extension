@@ -40,7 +40,9 @@ function getFromAddress(){
                  console.log(headers[i].value);
                  var match=regex.exec(headers[i].value);
                  console.log(match[1]);
-                 chrome.runtime.sendMessage({university: match[1]});
+                 chrome.runtime.sendMessage({university: match[1]},function(response){
+                     console.log(response.res);
+                 });
              }
                  
          }
