@@ -42,6 +42,7 @@ function getFromAddress(){
                  console.log(match[1]);
                  chrome.runtime.sendMessage({university: match[1]},function(response){
                      console.log(response.res);
+                     console.log("blarg");
                  });
              }
                  
