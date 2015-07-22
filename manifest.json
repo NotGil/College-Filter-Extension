@@ -10,7 +10,7 @@
     "default_title": "Click here!"
   },
   "background": {
-    "scripts": ["jquery-2.1.4.min.js","bluebird.min.js","background.js"]//,
+    "scripts": ["background.js"]//,
     //"persistent": false
   },
   "permissions": [
