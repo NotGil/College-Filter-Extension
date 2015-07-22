@@ -6,16 +6,9 @@ function find(UniversityName,fn) {
         if (xhr.readyState == 4) {
             // JSON.parse does not evaluate the attacker's scripts.
             var resp = JSON.parse(xhr.responseText);
+            console.log(resp);
             fn(resp);
         }
-    }
+    };
     xhr.send();
 }
-var jsonData;
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    find(request.university,function(data){
-        console.log(data);
-        jsonData=data;
-    });
-  });
