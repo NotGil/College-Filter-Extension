@@ -9,12 +9,12 @@ function find(UniversityName,fn) {
             // JSON.parse does not evaluate the attacker's scripts.
             var resp = JSON.parse(xhr.responseText);
             console.log(resp);
-            if(resp.name==null) {
-            //send error report here
-            }
-            else{
+            //if(resp[0].name==null) {
+            ////send error report here
+            //}
+            //else{
                 fn(resp);
-            }
+            //}
         }
     };
     xhr.send();
