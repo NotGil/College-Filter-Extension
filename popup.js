@@ -39,10 +39,22 @@ function getFromAddress(){
              if (headers[i].name == 'From'){
                  //console.log(headers[i].value);
                  var match=regex.exec(headers[i].value);
-                 console.log(match[1]);
-                 chrome.extension.getBackgroundPage().find(match[1],function(r){console.log(r[0].name)});
+                 console.log(match);
+                 //console.log(match[1]);
+                 chrome.extension.getBackgroundPage().find(match[1],function(r){
+                     displayInfo(r);
+                     console.log(r);
+                 });
              }
                  
          }
     });
+}
+function displayInfo(jsonObj){
+    document.getElementById('name').textContent = "Name: "+ jsonObj[0].name;
+    document.getElementById('city').textContent = "City: " +jsonObj[0].city;
+    document.getElementById('state').textContent = "State: "+jsonObj[0].state;
+    document.getElementById('admissionRate').textContent = "Admission Rate: "+jsonObj[0].percentAdmitted.total+"%";
+
+
 }
