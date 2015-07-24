@@ -16,7 +16,6 @@
   "permissions": [
         "tabs",
         "identity",
-        "http://universitywebapi.azurewebsites.net/",
         "https://*.google.com/*",
         "https://ssl.gstatic.com/",
         "https://www.googleapis.com/",
