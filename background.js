@@ -1,7 +1,7 @@
 function find(UniversityName,fn) {
 
     var xhr = new XMLHttpRequest();
-    var url="http://localhost:3000/api/University/"+UniversityName+"/";
+    var url="http://collegefilter.azurewebsites.net/api/University/"+UniversityName+"/";
     console.log(url);
     xhr.open("GET", url, true);
     xhr.onreadystatechange = function() {

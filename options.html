@@ -3,27 +3,73 @@
 <head>
     <title>My Test Extension Options</title>
     <style>
-        body: { padding: 10px; }
+
+        body{ padding: 10px;
+        width:600px;}
     </style>
 </head>
 
 <body>
-Favorite color:
-<select id="color">
-    <option value="red">red</option>
-    <option value="green">green</option>
-    <option value="blue">blue</option>
-    <option value="yellow">yellow</option>
-</select>
+What's important in a college for you?<br>
+<div class="container">
+    <label>
+        <input type="checkbox" id="region">Region<br>
+    </label>
+    <div id="_region" class="hide">
+        <select>
+            <option value="red">southwest</option>
+            <option value="green">northeast</option>
+            <option value="blue">west</option>
+            <option value="yellow">Southeast</option>
+        </select>
+    </div>
+</div>
+<div class="container">
+    <label>
+        <input type="checkbox" id="testScores">Test Scores<br>
+    </label>
+    <div id="_testScores" class="hide">
+        <div class="container" name="sat">
+            <label><input type="checkbox" id="sat">SAT</label><br>
+            <div id="_sat" class="hide">
+                <input type="text" id="_satmin">
+                <input type="text" id="_satmax">
+            </div>
 
-<label>
-    <input type="checkbox" id="like">
-    I like colors.
-</label>
+        </div>
+        <div class="container" name="act">
+            <label><input type="checkbox" id="act">ACT</label><br>
+            <div id="_act" class="hide">
+                <input type="text" id="_actmin">
+                <input type="text" id="_actmax">
+            </div>
+
+        </div>
+        <label><input type="checkbox">Include those that do not report scores</label>
+    </div>
+</div>
+<div class="container">
+    <label>
+        <input type="checkbox" id="type">Type of school<br>
+    </label>
+    <div id="_type" class="optional">
+        <label><input type="checkbox">2 year</label><label><input type="checkbox">4 year</label><br>
+        <label><input type="checkbox">Public</label><label><input type="checkbox">Private</label><label><input type="checkbox">For-Profit</label><br>
+        <label><input type="checkbox">Small</label><label><input type="checkbox">Medium</label><label><input type="checkbox">Large</label><br>
+        <label><input type="checkbox">Religious Affiliation or lack of</label><br>
+        <div class="container">
+            <label><input type="checkbox" id="histblack">Historically Black<br></label>
+            <input type="radio" name="a" value="true">Yes<input type="radio" name="a" value="false">No
+        </div>
+    </div>
+</div>
+
+
 
 <div id="status"></div>
 <button id="save">Save</button>
 
 <script src="options.js"></script>
+<link rel="stylesheet" type="text/css" href="options.css">
 </body>
 </html>

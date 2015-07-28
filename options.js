@@ -34,3 +34,40 @@ function restore_options() {
 document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('save').addEventListener('click',
     save_options);
+document.getElementById('region').addEventListener('click',function(){
+    var state=document.getElementById('region').checked;
+    var dropdown=document.getElementById('_region');
+    if(state==true){
+        dropdown.setAttribute('class','optional');
+    }else{
+        dropdown.setAttribute('class','hide');
+    }
+});
+document.getElementById('testScores').addEventListener('click',function(){
+    var state=document.getElementById('testScores').checked;
+    var dropdown=document.getElementById('_testScores');
+    if(state==true){
+        dropdown.setAttribute('class','optional');
+    }else{
+        dropdown.setAttribute('class','hide');
+    }
+});
+document.getElementById('sat').addEventListener('click',function(){
+    var state=document.getElementById('sat').checked;
+    var max=document.getElementById('_sat');
+    if(state==true){
+        max.setAttribute('class','optional');
+    }else{
+        max.setAttribute('class','hide');
+    }
+});
+document.getElementById('act').addEventListener('click',function(){
+    var state=document.getElementById('act').checked;
+    var max=document.getElementById('_act');
+    if(state==true){
+        max.setAttribute('class','optional');
+    }else{
+        max.setAttribute('class','hide');
+    }
+});
+

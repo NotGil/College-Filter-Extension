@@ -27,6 +27,7 @@
         "https://ssl.gstatic.com/",
         "https://www.googleapis.com/",
         "http://localhost:3000/",
+        "http://collegefilter.azurewebsites.net/",
         "https://accounts.google.com/"
     ],
   "oauth2": {
