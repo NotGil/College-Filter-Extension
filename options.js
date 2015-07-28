@@ -70,4 +70,48 @@ document.getElementById('act').addEventListener('click',function(){
         max.setAttribute('class','hide');
     }
 });
-
+document.getElementById('type').addEventListener('click',function(){
+    var state=document.getElementById('type').checked;
+    var max=document.getElementById('_type');
+    if(state==true){
+        max.setAttribute('class','optional');
+    }else{
+        max.setAttribute('class','hide');
+    }
+});
+document.getElementById('religion').addEventListener('click',function(){
+    var state=document.getElementById('religion').checked;
+    var max=document.getElementById('_religion');
+    if(state==true){
+        max.setAttribute('class','optional');
+    }else{
+        max.setAttribute('class','hide');
+    }
+});
+document.getElementById('histblack').addEventListener('click',function(){
+    var state=document.getElementById('histblack').checked;
+    var max=document.getElementById('_histblack');
+    if(state==true){
+        max.setAttribute('class','optional');
+    }else{
+        max.setAttribute('class','hide');
+    }
+});
+document.getElementById('setting').addEventListener('click',function(){
+    var state=document.getElementById('setting').checked;
+    var max=document.getElementById('_setting');
+    if(state==true){
+        max.setAttribute('class','optional');
+    }else{
+        max.setAttribute('class','hide');
+    }
+});
+document.getElementById('credits').addEventListener('click',function(){
+    var state=document.getElementById('credits').checked;
+    var max=document.getElementById('_credits');
+    if(state==true){
+        max.setAttribute('class','optional');
+    }else{
+        max.setAttribute('class','hide');
+    }
+});
