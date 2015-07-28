@@ -3,6 +3,7 @@
  */
 // Saves options to chrome.storage.sync.
 function save_options() {
+    console.log("adfjaldskfjal;s");
     var color = document.getElementById('color').value;
     var likesColor = document.getElementById('like').checked;
     chrome.storage.sync.set({

@@ -21,6 +21,7 @@
   },
   "permissions": [
         "tabs",
+        "storage",
         "identity",
         "https://*.google.com/*",
         "https://ssl.gstatic.com/",
