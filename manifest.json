@@ -10,8 +10,8 @@
     "default_title": "Click here!"
   },
   "background": {
-    "scripts": ["background.js"]//,
-    //"persistent": false
+    "scripts": ["background.js"],
+    "persistent": true
   },
   "options_ui": {
     // Required.
