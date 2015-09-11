@@ -5,96 +5,34 @@
     <style>
 
         body{ padding: 10px;
-        width:600px;}
+        width:600px;
+        }
     </style>
 </head>
 
 <body>
-What's important in a college for you?<br>
-<div class="container" name="Region">
-    <label>
-        <input type="checkbox" id="region" name="region">Region<br>
-    </label>
-    <div id="_region" class="hide">
-        <select name="_region">
-            <option value="southwest">southwest</option>
-            <option value="northeast">northeast</option>
-            <option value="west">west</option>
-            <option value="southeast">Southeast</option>
-        </select>
-    </div>
-</div>
-<div class="container" name="Test Scores">
-    <label>
-        <input type="checkbox" id="testScores" name="testScores">Test Scores<br>
-    </label>
-    <div id="_testScores" class="hide">
-        <div class="container" name="sat">
-            <label><input type="checkbox" id="sat" name="sat">SAT</label><br>
-            <div id="_sat" class="hide">
-                <input type="text" id="_satmin" name="satmin">
-                <input type="text" id="_satmax" name="satmax">
-            </div>
-        </div>
-        <div class="container" name="act">
-            <label><input type="checkbox" id="act">ACT</label><br>
-            <div id="_act" class="hide">
-                <input type="text" id="_actmin">
-                <input type="text" id="_actmax">
-            </div>
-
-        </div>
-        <label><input type="checkbox">Include those that do not report scores</label>
-    </div>
-</div>
-<div class="container" name="Type of School">
-    <label>
-        <input type="checkbox" id="type">Type of school<br>
-    </label>
-    <div id="_type" class="hide">
-        <label><input type="checkbox">2 year</label><label><input type="checkbox">4 year</label><br>
-        <label><input type="checkbox">Public</label><label><input type="checkbox">Private</label><label><input type="checkbox">For-Profit</label><br>
-        <label><input type="checkbox">Small</label><label><input type="checkbox">Medium</label><label><input type="checkbox">Large</label><br>
-        <div class="container">
-            <label><input type="checkbox" id="religion">Religious Affiliation or lack of</label><br>
-            <div class="hide" id="_religion">
+    <div id="container">
+        <div id="content">
+            <div class="option1">
                 <select>
-                    <option value="none">None/No affiliation</option>
-                    <option value="Roman Catholic">Roman Catholic</option>
+                    <option selected="selected">--Select a criteria--</option>
+                    <option>Admission Rate</option>
+                    <option>SAT Scores</option>
+                    <option>Region</option>
+                    <option>Net Price</option>
+                    <option>Diversity</option>
+                    <option>Religious Affiliation</option>
+                    <option>ACT Scores</option>
                 </select>
+                <br>
             </div>
-
         </div>
-        <div class="container">
-            <label><input type="checkbox" id="histblack">Historically Black<br></label>
-            <div class="hide" id="_histblack">
-                <input type="radio" name="a" value="true">Yes<input type="radio" name="a" value="false">No
-            </div>
 
-        </div>
+        <a href="javascript:;" id="addSec">Add another</a>
+        <button id="save">Save</button>
     </div>
-</div>
-<div class="container" name="Campus Setting">
-    <label><input type="checkbox" id="setting">Campus Setting</label>
-    <div class="hide" id="_setting">
-        <label><input type="checkbox" value="rural">Rural</label>
-        <label><input type="checkbox" value="suburban">Suburban</label>
-        <label><input type="checkbox" value="urban">Urban</label>
-    </div>
-</div>
-<div class="container" name="College Credits">
-    <label><input type="checkbox" id="credits">Accepts AP/DC credits</label><br>
-    <div class="hide" id="_credits">
-        <label><input type="checkbox">AP</label>
-        <label><input type="checkbox">DC</label>
-        <label><input type="checkbox">CLEP</label>
-    </div>
-</div>
 
-<div id="status"></div>
-<button id="save">Save</button>
-
-<script src="options.js"></script>
-<link rel="stylesheet" type="text/css" href="options.css">
+    <script src="options.js"></script>
+    <link rel="stylesheet" type="text/css" href="options.css">
 </body>
 </html>

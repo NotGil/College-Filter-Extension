@@ -9,7 +9,7 @@ function onGoogleLibraryLoaded() {
 var authorizationCallback = function (data) {
     gapi.auth.setToken({access_token: data});
     gapi.client.load('gmail', 'v1', function () {
-        //console.log("api loaded");
+        console.log("api loaded");
         getFromAddress();
     });
 };
@@ -23,7 +23,7 @@ var getMessageIdFromUrl = function (url) {
 var tablink;
 chrome.tabs.getSelected(null,function(tab){
     tablink = tab.url;
-    //console.log(tablink);
+    console.log(tablink);
 });
 function getFromAddress(){
     var messageId=getMessageIdFromUrl(tablink);
@@ -37,10 +37,10 @@ function getFromAddress(){
         var regex=new RegExp('<.*@(.*).edu>');
         for(var i=0;i<headers.length;i++){
              if (headers[i].name == 'From'){
-                 //console.log(headers[i].value);
+                 console.log(headers[i].value);
                  var match=regex.exec(headers[i].value);
                  console.log(match);
-                 //console.log(match[1]);
+                 console.log(match[1]);
                  if(match[1].indexOf(".")!=-1){
                      var temp=match[1].split("\.")[1];
                      console.log(temp);
