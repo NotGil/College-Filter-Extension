@@ -41,8 +41,8 @@ function addMoreOptions(){
 
     div.className = 'option';
 
-    div.innerHTML = '<select >\
-                        <option selected="selected">--Select a criteria--</option>\
+    div.innerHTML = '<select id="option '+(numOfOptions+1)+'">'+
+                        '<option selected="selected">--Select a criteria--</option>\
                         <option >Admission Rate</option>\
                         <option>SAT Scores</option>\
                         <option>Region</option>\
@@ -93,3 +93,14 @@ function displayOption(index){
     }
 
 }
+var value1=null;
+var oldValue1=null;
+var option1=document.getElementById("option 1");
+option1.addEventListener('click',function(){
+    oldValue1=value1;
+    value1=option1.options[option1.selectedIndex].value;
+    if(value1!=oldValue1){
+        console.log("you changed the value to: "+value1);
+    }
+
+});
