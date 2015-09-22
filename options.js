@@ -64,4 +64,32 @@ function addMoreOptions(){
     }
 
 }
-//document.getElementById("option1").valueOf()
+function displayOption(index){
+    var parent=document.getElementById("option 1");
+    var div=document.createElement('div');
+    div.className='criteria';
+    switch(index){
+        case 1:
+            div.innerHTML='Admission Rate lower than <input type="text">';
+            parent.appendChild(div);
+            break;
+        case 2:
+            div.innerHTML='SAT Scores higher than <input type="text">';
+            parent.appendChild(div);
+            break;
+        case 3:
+            //dropdown <select> menu
+            div.innerHTML='<select>\
+                                <option>SouthEast</option>\
+                                <option>NorthWest</option>\
+                                <option>Weast</option>\
+                            </select>';
+            parent.appendChild(div);
+            break;
+        case 4:
+            //Net Price max
+            //Net Price min
+            break;
+    }
+
+}
