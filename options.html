@@ -13,23 +13,26 @@
 <body>
     <div id="container">
         <div id="content">
-            <div class="option1">
-                <select>
-                    <option selected="selected">--Select a criteria--</option>
-                    <option>Admission Rate</option>
-                    <option>SAT Scores</option>
-                    <option>Region</option>
-                    <option>Net Price</option>
-                    <option>Diversity</option>
-                    <option>Religious Affiliation</option>
-                    <option>ACT Scores</option>
-                </select>
-                <br>
-            </div>
+            <form action="http://localhost:1337/api/filter" id="form">
+                <div class="criteria" id="first">
+                    <select id="option 1" name="first">
+                        <option selected="selected"value=null>--Select a criteria--</option>
+                        <option value="admission">Admission Rate</option>
+                        <option value="SATScores">SAT Scores</option>
+                        <option value="region">Region</option>
+                        <option value="netPrice">Net Price</option>
+                        <option value="religion">Religious Affiliation</option>
+                        <option value="ACTScores">ACT Scores</option>
+                    </select>
+                    <br>
+                </div>
+                <a href="javascript:;" id="addSec">Add another</a>
+                <input type="submit" name="submit" id="submit" value="Submit" />
+            </form>
         </div>
 
-        <a href="javascript:;" id="addSec">Add another</a>
-        <button id="save">Save</button>
+        <!--<button id="save">Save</button>-->
+
     </div>
 
     <script src="options.js"></script>

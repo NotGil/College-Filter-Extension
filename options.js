@@ -35,72 +35,146 @@
 //document.getElementById('save').addEventListener('click',
 //    save_options);
 var numOfOptions=1;
+var submitButton=document.getElementById("submit");
+var addAnotherLink=document.getElementById("addSec");
 document.getElementById('addSec').addEventListener('click',addMoreOptions);
 function addMoreOptions(){
+    var parent=document.getElementById("form");
     var div = document.createElement('div');
 
-    div.className = 'option';
-
-    div.innerHTML = '<select id="option '+(numOfOptions+1)+'">'+
-                        '<option selected="selected">--Select a criteria--</option>\
-                        <option >Admission Rate</option>\
-                        <option>SAT Scores</option>\
-                        <option>Region</option>\
-                        <option>Net Price</option>\
-                        <option>Diversity</option>\
-                        <option>Religious Affiliation</option>\
-                        <option>ACT Scores</option>\
+    div.className = 'criteria';
+    var name=numOfOptions==1?"second":"third";
+    div.id=name;
+    div.innerHTML='<select id="option '+(numOfOptions+1)+'" name="'+name+'">'+
+                       '<option selected="selected" value=null>--Select a criteria--</option>\
+                        <option value="admission">Admission Rate</option>\
+                        <option value="SATScores">SAT Scores</option>\
+                        <option value="region">Region</option>\
+                        <option value="netPrice">Net Price</option>\
+                        <option value="religion">Religious Affiliation</option>\
+                        <option value="ACTScores">ACT Scores</option>\
                     </select>\
                     <br>';
-    console.log(numOfOptions);
-    if(numOfOptions<=2){
-        document.getElementById('content').appendChild(div);
-        if(numOfOptions==2){
-            var parent=document.getElementById("container");
+    switch (numOfOptions){
+        case 1:
+            document.getElementById('form').appendChild(div);
+            parent.removeChild(addAnotherLink);
+            parent.appendChild(addAnotherLink);
+            parent.removeChild(submitButton);
+            parent.appendChild(submitButton);
+            option2();
+            numOfOptions++;
+            break;
+        case 2:
+            document.getElementById('form').appendChild(div);
+            option3();
             var child=document.getElementById("addSec");
             parent.removeChild(child);
-        }
-        numOfOptions++;
+            parent.removeChild(submitButton);
+            parent.appendChild(submitButton);
+            numOfOptions++;
+            break;
+
     }
 
 }
-function displayOption(index){
-    var parent=document.getElementById("option 1");
+function displayOption(whichOption,index){
+
+    var parent=document.getElementById(whichOption);
     var div=document.createElement('div');
-    div.className='criteria';
+    div.className='userData';
     switch(index){
         case 1:
-            div.innerHTML='Admission Rate lower than <input type="text">';
+            try{
+                var child=parent.lastElementChild;
+                parent.removeChild(child);
+            }catch(err){}
+            console.log(whichOption);
+            div.innerHTML='Admission Rate lower than <input type="text" name="admission">';
             parent.appendChild(div);
             break;
         case 2:
-            div.innerHTML='SAT Scores higher than <input type="text">';
+            try{
+                var child=parent.lastElementChild;
+                parent.removeChild(child);
+            }catch(err){}
+            div.innerHTML='Math SAT higher than <input type="text" name="SATScores" size="4"><br>\
+                           Reading SAT Scores higher than <input type="text" name="SATScores" size="4"><br>\
+                           Writing SAT Scores higher than <input type="text" name="SATScores" size="4">';
             parent.appendChild(div);
             break;
         case 3:
+            try{
+                var child=parent.lastElementChild;
+                parent.removeChild(child);
+            }catch(err){}
             //dropdown <select> menu
-            div.innerHTML='<select>\
-                                <option>SouthEast</option>\
-                                <option>NorthWest</option>\
-                                <option>Weast</option>\
+            div.innerHTML='<select name="region">\
+                                <option value="SouthEast">SouthEast</option>\
+                                <option value="Far West">Far West</option>\
+                                <option value="Southwest">Southwest</option>\
+                                <option value="Plains">Plains</option>\
+                                <option value="Rocky Mountains">Rocky Mountains</option>\
+                                <option value="New England">New England</option>\
+                                <option value="Mid East">Mid East</option>\
+                                <option value="Great Lakes">Great Lakes</option>\
                             </select>';
             parent.appendChild(div);
             break;
         case 4:
             //Net Price max
-            //Net Price min
             break;
     }
 
 }
-var value1=null;
-var oldValue1=null;
 var option1=document.getElementById("option 1");
+var value1=null;
+value1=option1.options[option1.selectedIndex].value;
+var oldValue1=null;
 option1.addEventListener('click',function(){
     oldValue1=value1;
     value1=option1.options[option1.selectedIndex].value;
     if(value1!=oldValue1){
-        console.log("you changed the value to: "+value1);
+        console.log("you changed the value of option 1 to: "+value1);
+        displayOption("first",option1.selectedIndex);
     }
 
 });
+function option2(){
+    var option2=document.getElementById("option 2");
+    var value2=null;
+    value2=option2.options[option2.selectedIndex].value;
+    var oldValue2=null;
+    option2.addEventListener('click',function(){
+        oldValue2=value2;
+        value2=option2.options[option2.selectedIndex].value;
+        if(value2!=oldValue2){
+            console.log("you changed the value of option 2 to: "+value2);
+            displayOption("second",option2.selectedIndex);
+        }
+
+    });
+}
+function option3(){
+    var option3=document.getElementById("option 3");
+    var value3=null;
+    value3=option3.options[option3.selectedIndex].value;
+    var oldValue3=null;
+    option3.addEventListener('click',function(){
+        oldValue3=value3;
+        value3=option3.options[option3.selectedIndex].value;
+        if(value3!=oldValue3){
+            console.log("you changed the value of option 3 to: "+value3);
+            displayOption("third",option3.selectedIndex);
+        }
+
+    });
+}
+
+function captureForm(){
+    console.log(document.getElementById("form"));
+    var formElement = document.getElementById("form");
+    var request = new XMLHttpRequest();
+    request.open("POST", "http://localhost:1337/api/filter");
+    request.send(new FormData(formElement));
+}

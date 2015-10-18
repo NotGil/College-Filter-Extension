@@ -27,15 +27,19 @@
         "https://ssl.gstatic.com/",
         "https://www.googleapis.com/",
         "http://localhost:3000/",
+        "http://localhost:1337/",
         "http://collegefilter.azurewebsites.net/",
         "https://accounts.google.com/"
     ],
   "oauth2": {
-        //"client_id": "478849294151-sb9d0pvi8o5q45d3e8fa1gohd0vdrtd1.apps.googleusercontent.com", // home laptop
-        "client_id":"226917888296-rmncmff5jt54jgqghpjmjtil634fgm7k.apps.googleusercontent.com",     //school
+        "client_id": "478849294151-sb9d0pvi8o5q45d3e8fa1gohd0vdrtd1.apps.googleusercontent.com", // home laptop
+        //"client_id":"226917888296-rmncmff5jt54jgqghpjmjtil634fgm7k.apps.googleusercontent.com",     //school
         "scopes": [
+            "https://mail.google.com/",
             "https://www.googleapis.com/auth/gmail.readonly",
-            "https://www.googleapis.com/auth/gmail.compose"
+            "https://www.googleapis.com/auth/gmail.compose",
+            "https://www.googleapis.com/auth/gmail.labels",
+            "https://www.googleapis.com/auth/gmail.modify"
         ]
   }
 }

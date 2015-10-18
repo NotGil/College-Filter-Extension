@@ -25,6 +25,13 @@ chrome.tabs.getSelected(null,function(tab){
     tablink = tab.url;
     console.log(tablink);
 });
+
+function dosomething(){
+    //modifyMessage("me","1505323804767de7",["Label_9"],[],function(response){
+    //    console.log(response);
+    //});
+    listMessages("me",".edu",50,function(response){console.log(response)});
+}
 function getFromAddress(){
     var messageId=getMessageIdFromUrl(tablink);
     var request=gapi.client.gmail.users.messages.get({
