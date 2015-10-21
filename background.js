@@ -16,6 +16,6 @@ function find(UniversityName,fn) {
                 fn(resp);
             //}
         }
-    };
+    }
     xhr.send();
 }

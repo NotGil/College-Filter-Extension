@@ -171,10 +171,66 @@ function option3(){
     });
 }
 
-function captureForm(){
-    console.log(document.getElementById("form"));
+function processForm(e) {
+    if (e.preventDefault) e.preventDefault();
     var formElement = document.getElementById("form");
-    var request = new XMLHttpRequest();
-    request.open("POST", "http://localhost:1337/api/filter");
-    request.send(new FormData(formElement));
+    sendData(formElement);
+    // You must return false to prevent the default form behavior
+    return false;
+}
+
+var form = document.getElementById('form');
+if (form.attachEvent) {
+    form.attachEvent("submit", processForm);
+} else {
+    form.addEventListener("submit", processForm);
+}
+function sendData(formElement) {
+    var XHR = new XMLHttpRequest();
+    var urlEncodedData = "";
+    var urlEncodedDataPairs = [];
+    var name;
+
+    //// We turn the data object into an array of URL encoded key value pairs.
+    //for(name in data) {
+    //    urlEncodedDataPairs.push(encodeURIComponent(name) + '=' + encodeURIComponent(data[name]));
+    //}
+
+    var first=document.getElementsByName("first")[0];
+    var second=document.getElementsByName("second")[0];
+    var third=document.getElementsByName("third")[0];
+
+    urlEncodedDataPairs.push(encodeURIComponent("first") + '=' + encodeURIComponent(first[first.selectedIndex].value));
+    urlEncodedDataPairs.push(encodeURIComponent(first[first.selectedIndex].value) + '=' + encodeURIComponent(document.getElementsByName(first[first.selectedIndex].value)[0].value));
+
+    // We combine the pairs into a single string and replace all encoded spaces to
+    // the plus character to match the behaviour of the web browser form submit.
+    urlEncodedData = urlEncodedDataPairs.join('&').replace(/%20/g, '+');
+
+    // We define what will happen if the data is successfully sent
+    XHR.addEventListener('load', function(event) {
+        alert('Yeah! Data sent and response loaded.');
+    });
+
+    // We define what will happen in case of error
+    XHR.addEventListener('error', function(event) {
+        alert('Oups! Something goes wrong.');
+    });
+
+    // We setup our request
+    XHR.open('POST', 'http://localhost:1337/api/filter');
+
+    // We add the required HTTP header to handle a form data POST request
+    XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    // And finally, We send our data.
+    XHR.send(urlEncodedData);
+    XHR.onreadystatechange = function() {
+        if (XHR.readyState == 4) {
+            // JSON.parse does not evaluate the attacker's scripts.
+            var resp = JSON.parse(XHR.responseText);
+            console.log(resp);
+            listMessages("me",".edu",50,function(response){console.log(response)});
+        }
+    }
 }

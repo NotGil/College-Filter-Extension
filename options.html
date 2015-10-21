@@ -13,7 +13,8 @@
 <body>
     <div id="container">
         <div id="content">
-            <form action="http://localhost:1337/api/filter" id="form">
+            <!--<form action="http://localhost:1337/api/filter" id="form">-->
+            <form id="form">
                 <div class="criteria" id="first">
                     <select id="option 1" name="first">
                         <option selected="selected"value=null>--Select a criteria--</option>
@@ -27,7 +28,7 @@
                     <br>
                 </div>
                 <a href="javascript:;" id="addSec">Add another</a>
-                <input type="submit" name="submit" id="submit" value="Submit" />
+                <input type="submit"/>
             </form>
         </div>
 
@@ -36,6 +37,7 @@
     </div>
 
     <script src="options.js"></script>
+    <script src="gmailFunctions.js"></script>
     <link rel="stylesheet" type="text/css" href="options.css">
 </body>
 </html>
