@@ -1,6 +1,22 @@
 /**
  * Created by Gilberto on 7/24/2015.
  */
+
+//used to sign in to the users google account in order to use the GmailAPI
+var signin = function (callback) {
+    chrome.identity.getAuthToken({interactive: true}, callback);
+};
+
+function onGoogleLibraryLoaded() {
+    signin(authorizationCallback);
+}
+
+var authorizationCallback = function (data) {
+    gapi.auth.setToken({access_token: data});
+    gapi.client.load('gmail', 'v1', function () {
+        console.log("api loaded");
+    });
+};
 // Saves options to chrome.storage.sync.
 //function save_options() {
 //    console.log("adfjaldskfjal;s");
@@ -34,6 +50,8 @@
 //document.addEventListener('DOMContentLoaded', restore_options);
 //document.getElementById('save').addEventListener('click',
 //    save_options);
+
+
 var numOfOptions=1;
 var submitButton=document.getElementById("submit");
 var addAnotherLink=document.getElementById("addSec");
@@ -185,6 +203,7 @@ if (form.attachEvent) {
 } else {
     form.addEventListener("submit", processForm);
 }
+var theUnacceptables;
 function sendData(formElement) {
     var XHR = new XMLHttpRequest();
     var urlEncodedData = "";
@@ -218,7 +237,7 @@ function sendData(formElement) {
     });
 
     // We setup our request
-    XHR.open('POST', 'http://localhost:1337/api/filter');
+    XHR.open('POST', 'http://localhost:3000/api/filter');
 
     // We add the required HTTP header to handle a form data POST request
     XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -230,7 +249,59 @@ function sendData(formElement) {
             // JSON.parse does not evaluate the attacker's scripts.
             var resp = JSON.parse(XHR.responseText);
             console.log(resp);
-            listMessages("me",".edu",50,function(response){console.log(response)});
+            theUnacceptables=resp;
+            listMessages("me",".edu",10,function(response){
+                console.log(response.messages);
+                var messages=response.messages;
+                for(var i=0;i<messages.length;i++){
+                        getFromAddress(messages[i].id,function(fromAddress){
+                            if(fromAddress==null){
+                                console.log("do nothing");
+                            }else{
+                                var flag=true;
+                                for(var w=0;w<theUnacceptables.length;w++){
+                                    if(theUnacceptables[w].match("^"+fromAddress)!=null){ //if the from address is in the list of unwanted colleges dispose of it
+                                        console.log(fromAddress+" does not pass the set criteria "+theUnacceptables[w]);
+                                        flag=false;
+                                    }
+                                }
+                                if(flag){
+                                    console.log(fromAddress+" passes the set criteria");
+                                }
+                            }
+
+                        });
+                }
+            });
         }
     }
+}
+
+function getFromAddress(messageId,callback){
+    var request=gapi.client.gmail.users.messages.get({
+        'userId':'me',
+        'id':messageId,
+        'fields': 'payload'
+    });
+    request.execute(function(message){
+        var headers=message.payload.headers;
+        var regex=new RegExp('<.*@(.*.edu)>');
+        for(var i=0;i<headers.length;i++){
+            if (headers[i].name == 'From'){
+                //console.log("from header value: "+headers[i].value);
+                var match=regex.exec(headers[i].value);
+                //console.log("regex object: "+match);
+                //console.log(match[1]);
+                try{
+                    callback(match[1]);
+                }
+                catch(e){
+                    if (e instanceof TypeError) {
+                        callback(null);
+                    }
+                }
+            }
+
+        }
+    });
 }
