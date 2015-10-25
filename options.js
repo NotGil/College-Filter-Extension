@@ -189,22 +189,24 @@ function option3(){
     });
 }
 
-function processForm(e) {
-    if (e.preventDefault) e.preventDefault();
-    var formElement = document.getElementById("form");
-    sendData(formElement);
-    // You must return false to prevent the default form behavior
-    return false;
-}
-
+//catches the form submission event so it does not create a new window
 var form = document.getElementById('form');
 if (form.attachEvent) {
     form.attachEvent("submit", processForm);
 } else {
     form.addEventListener("submit", processForm);
 }
-var theUnacceptables;
-function sendData(formElement) {
+function processForm(e) {
+    if (e.preventDefault) e.preventDefault();
+    sendData();
+    // You must return false to prevent the default form behavior
+    return false;
+}
+/**
+ * Creates and sends a http request for a list of colleges that do not meet the criteria
+ *
+ */
+function sendData() {
     var XHR = new XMLHttpRequest();
     var urlEncodedData = "";
     var urlEncodedDataPairs = [];
@@ -233,7 +235,7 @@ function sendData(formElement) {
 
     // We define what will happen in case of error
     XHR.addEventListener('error', function(event) {
-        alert('Oups! Something goes wrong.');
+        alert('Oops! Something goes wrong.');
     });
 
     // We setup our request
@@ -249,34 +251,51 @@ function sendData(formElement) {
             // JSON.parse does not evaluate the attacker's scripts.
             var resp = JSON.parse(XHR.responseText);
             console.log(resp);
-            theUnacceptables=resp;
-            listMessages("me",".edu",10,function(response){
-                console.log(response.messages);
-                var messages=response.messages;
-                for(var i=0;i<messages.length;i++){
-                        getFromAddress(messages[i].id,function(fromAddress){
-                            if(fromAddress==null){
-                                console.log("do nothing");
-                            }else{
-                                var flag=true;
-                                for(var w=0;w<theUnacceptables.length;w++){
-                                    if(theUnacceptables[w].match("^"+fromAddress)!=null){ //if the from address is in the list of unwanted colleges dispose of it
-                                        console.log(fromAddress+" does not pass the set criteria "+theUnacceptables[w]);
-                                        flag=false;
-                                    }
-                                }
-                                if(flag){
-                                    console.log(fromAddress+" passes the set criteria");
-                                }
-                            }
+            sortInbox(resp);
 
-                        });
-                }
-            });
         }
     }
 }
 
+/**
+ * Gets a list of messages from the users inbox and checks if the messages are from the list
+ * of unacceptables, if they are they are sent to the SPAM folder.
+ *
+ * @param {Array} theUnacceptables Array of domain names that the user does not want in their inbox
+ */
+function sortInbox(theUnacceptables){
+    listMessages("me",".edu",10,function(response){
+        console.log(response.messages);
+        var messages=response.messages;
+        for(var i=0;i<messages.length;i++){
+            getFromAddress(messages[i].id,function(fromAddress,messageId){
+                if(fromAddress==null){
+                    console.log("do nothing with "+messageId);
+                }else{
+                    var flag=true;
+                    for(var w=0;w<theUnacceptables.length;w++){
+                        if(theUnacceptables[w].match("^"+fromAddress)!=null){ //if the from address is in the list of unwanted colleges dispose of it
+                            console.log(fromAddress+" does not pass the set criteria "+theUnacceptables[w]);
+                            moveToSpam(messageId);
+                            //moveToSpam(messages[i].id);
+                            flag=false;
+                        }
+                    }
+                    if(flag){
+                        console.log(fromAddress+" passes the set criteria");
+                    }
+                }
+
+            });
+        }
+    });
+}
+/**
+ * Get the from address from a message, if the address is in <name@domain.edu> format
+ *
+ * @param {String} messageId the ID of the message that you want a from address for
+ * @param {Function} callback Function to call when the request is complete.
+ */
 function getFromAddress(messageId,callback){
     var request=gapi.client.gmail.users.messages.get({
         'userId':'me',
@@ -293,15 +312,25 @@ function getFromAddress(messageId,callback){
                 //console.log("regex object: "+match);
                 //console.log(match[1]);
                 try{
-                    callback(match[1]);
+                    callback(match[1],messageId);
                 }
                 catch(e){
                     if (e instanceof TypeError) {
-                        callback(null);
+                        callback(null,messageId);
+                        console.log(e);
                     }
                 }
             }
 
         }
     });
+}
+/**
+ * Mark a message as spam and move away from inbox
+ *
+ * @param {String} messageId ID of Message to send to the spam folder
+ */
+function moveToSpam(messageId){
+    console.log("move to spam running");
+    modifyMessage("me",messageId,new Array("SPAM"),new Array("INBOX"),function(){console.log(messageId+" moved to spam");});
 }
