@@ -9,12 +9,14 @@ var signin = function (callback) {
 
 function onGoogleLibraryLoaded() {
     signin(authorizationCallback);
+
 }
 
 var authorizationCallback = function (data) {
     gapi.auth.setToken({access_token: data});
     gapi.client.load('gmail', 'v1', function () {
         console.log("api loaded");
+        fillDestinationSelection();
     });
 };
 // Saves options to chrome.storage.sync.
@@ -54,8 +56,25 @@ var authorizationCallback = function (data) {
 
 var numOfOptions=1;
 var submitButton=document.getElementById("submit");
-var addAnotherLink=document.getElementById("addSec");
-document.getElementById('addSec').addEventListener('click',addMoreOptions);
+//var addAnotherLink=document.getElementById("addSec");
+
+function fillDestinationSelection(){
+    listLabels("me",function(resp){
+        var selectList=document.getElementById("destination");
+       for(var i=0;i<resp.length;i++){
+           console.log(resp[i].type);
+           if(resp[i].type=="user"){
+               var option=document.createElement("option");
+               option.value=resp[i].id;
+               option.text=resp[i].name;
+               selectList.appendChild(option);
+           }
+
+       }
+    });
+
+}
+//document.getElementById('addSec').addEventListener('click',addMoreOptions);
 function addMoreOptions(){
     var parent=document.getElementById("form");
     var div = document.createElement('div');
@@ -76,23 +95,13 @@ function addMoreOptions(){
     switch (numOfOptions){
         case 1:
             document.getElementById('form').appendChild(div);
-            parent.removeChild(addAnotherLink);
-            parent.appendChild(addAnotherLink);
-            parent.removeChild(submitButton);
-            parent.appendChild(submitButton);
             option2();
-            numOfOptions++;
-            break;
-        case 2:
-            document.getElementById('form').appendChild(div);
-            option3();
             var child=document.getElementById("addSec");
             parent.removeChild(child);
             parent.removeChild(submitButton);
             parent.appendChild(submitButton);
             numOfOptions++;
             break;
-
     }
 
 }
@@ -108,7 +117,7 @@ function displayOption(whichOption,index){
                 parent.removeChild(child);
             }catch(err){}
             console.log(whichOption);
-            div.innerHTML='Admission Rate lower than <input type="text" name="admission">';
+            div.innerHTML='Admission Rate lower than <input type="text" name="admission" maxlength="2" size="1">%';
             parent.appendChild(div);
             break;
         case 2:
@@ -173,21 +182,6 @@ function option2(){
 
     });
 }
-function option3(){
-    var option3=document.getElementById("option 3");
-    var value3=null;
-    value3=option3.options[option3.selectedIndex].value;
-    var oldValue3=null;
-    option3.addEventListener('click',function(){
-        oldValue3=value3;
-        value3=option3.options[option3.selectedIndex].value;
-        if(value3!=oldValue3){
-            console.log("you changed the value of option 3 to: "+value3);
-            displayOption("third",option3.selectedIndex);
-        }
-
-    });
-}
 
 //catches the form submission event so it does not create a new window
 var form = document.getElementById('form');
@@ -198,9 +192,31 @@ if (form.attachEvent) {
 }
 function processForm(e) {
     if (e.preventDefault) e.preventDefault();
-    sendData();
+    if(validateForm()){
+        sendData();
+    }
+
     // You must return false to prevent the default form behavior
     return false;
+}
+function validateForm(){
+    var option1=document.getElementById("option 1");
+    var destinationFolder=document.getElementById("destination");
+    if(option1.selectedIndex==0){
+        return false;
+    }
+    else{
+        //check for input for admission,region,and religion
+        var num=(document.getElementsByName("admission")[0].value);
+        if(isNaN(num)){
+            return false;
+        }
+    }
+    if(destinationFolder.selectedIndex==0){
+        return false;
+    }
+    return true;
+
 }
 /**
  * Creates and sends a http request for a list of colleges that do not meet the criteria
@@ -256,7 +272,6 @@ function sendData() {
         }
     }
 }
-
 /**
  * Gets a list of messages from the users inbox and checks if the messages are from the list
  * of unacceptables, if they are they are sent to the SPAM folder.
@@ -276,8 +291,8 @@ function sortInbox(theUnacceptables){
                     for(var w=0;w<theUnacceptables.length;w++){
                         if(theUnacceptables[w].match("^"+fromAddress)!=null){ //if the from address is in the list of unwanted colleges dispose of it
                             console.log(fromAddress+" does not pass the set criteria "+theUnacceptables[w]);
-                            moveToSpam(messageId);
-                            //moveToSpam(messages[i].id);
+                            getDestinationLabel();
+                            moveToLabel(messageId);
                             flag=false;
                         }
                     }
@@ -326,11 +341,17 @@ function getFromAddress(messageId,callback){
     });
 }
 /**
- * Mark a message as spam and move away from inbox
+ * Moves the message from the Inbox to the folder that was selected prior
  *
  * @param {String} messageId ID of Message to send to the spam folder
  */
-function moveToSpam(messageId){
-    console.log("move to spam running");
-    modifyMessage("me",messageId,new Array("SPAM"),new Array("INBOX"),function(){console.log(messageId+" moved to spam");});
+function moveToLabel(messageId){
+    var label=getDestinationLabel();
+    console.log(messageId+" moved to "+label);
+    modifyMessage("me",messageId,new Array(label),new Array("INBOX"),function(){console.log(messageId+" moved to spam");});
+}
+function getDestinationLabel(){
+    var selectList=document.getElementById("destination");
+    selected=selectList.options[selectList.selectedIndex].value;
+    return selected;
 }

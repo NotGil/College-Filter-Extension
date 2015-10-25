@@ -19,16 +19,19 @@
                     <select id="option 1" name="first">
                         <option selected="selected"value=null>--Select a criteria--</option>
                         <option value="admission">Admission Rate</option>
-                        <option value="SATScores">SAT Scores</option>
                         <option value="region">Region</option>
-                        <option value="netPrice">Net Price</option>
                         <option value="religion">Religious Affiliation</option>
-                        <option value="ACTScores">ACT Scores</option>
                     </select>
                     <br>
                 </div>
-                <a href="javascript:;" id="addSec">Add another</a>
-                <input type="submit"/>
+                Move Emails to:
+                <select id="destination">
+                    <option selected="selected"value=null>--Select a folder--</option>
+                    <option value="SPAM">SPAM</option>
+                </select>
+                <br>
+                <!--<a href="javascript:;" id="addSec">Add another</a>-->
+                <input type="submit" id="submit"/>
             </form>
         </div>
 
