@@ -41,7 +41,7 @@ function getFromAddress(){
     });
     request.execute(function(message){
         var headers=message.payload.headers;
-        var regex=new RegExp('<.*@(.*).edu>');
+        var regex=new RegExp('.*@(.*).edu');
         for(var i=0;i<headers.length;i++){
              if (headers[i].name == 'From'){
                  console.log(headers[i].value);
@@ -63,6 +63,8 @@ function getFromAddress(){
 
                      });
                  }
+
+
 
              }
                  
@@ -94,6 +96,11 @@ function formatDescription(j){
     urbanization=urbanization.toLowerCase();
     description="A "+size+" college located in a "+urbanization+" setting";
     return description;
+}
+function errorScreen(){
+    document.getElementById('header').textContent="Error";
+    document.getElementById('name').textContent="Could not find college";
+    document.getElementById('description').textContent="";
 }
 document.querySelector('#go-to-options').addEventListener("click",function() {
     if (chrome.runtime.openOptionsPage) {

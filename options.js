@@ -62,7 +62,7 @@ function fillDestinationSelection(){
     listLabels("me",function(resp){
         var selectList=document.getElementById("destination");
        for(var i=0;i<resp.length;i++){
-           console.log(resp[i].type);
+           //console.log(resp[i].type);
            if(resp[i].type=="user"){
                var option=document.createElement("option");
                option.value=resp[i].id;
@@ -120,17 +120,17 @@ function displayOption(whichOption,index){
             div.innerHTML='Admission Rate lower than <input type="text" name="admission" maxlength="2" size="1">%';
             parent.appendChild(div);
             break;
+        //case 3:
+        //    try{
+        //        var child=parent.lastElementChild;
+        //        parent.removeChild(child);
+        //    }catch(err){}
+        //    div.innerHTML='Math SAT higher than <input type="text" name="SATScores" size="4"><br>\
+        //                   Reading SAT Scores higher than <input type="text" name="SATScores" size="4"><br>\
+        //                   Writing SAT Scores higher than <input type="text" name="SATScores" size="4">';
+        //    parent.appendChild(div);
+        //    break;
         case 2:
-            try{
-                var child=parent.lastElementChild;
-                parent.removeChild(child);
-            }catch(err){}
-            div.innerHTML='Math SAT higher than <input type="text" name="SATScores" size="4"><br>\
-                           Reading SAT Scores higher than <input type="text" name="SATScores" size="4"><br>\
-                           Writing SAT Scores higher than <input type="text" name="SATScores" size="4">';
-            parent.appendChild(div);
-            break;
-        case 3:
             try{
                 var child=parent.lastElementChild;
                 parent.removeChild(child);
@@ -193,6 +193,7 @@ if (form.attachEvent) {
 function processForm(e) {
     if (e.preventDefault) e.preventDefault();
     if(validateForm()){
+        document.getElementById("submit").disabled=true;
         sendData();
     }
 
@@ -255,7 +256,7 @@ function sendData() {
     });
 
     // We setup our request
-    XHR.open('POST', 'http://localhost:3000/api/filter');
+    XHR.open('POST', 'http://collegefilter.azurewebsites.net/api/filter');
 
     // We add the required HTTP header to handle a form data POST request
     XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -265,9 +266,15 @@ function sendData() {
     XHR.onreadystatechange = function() {
         if (XHR.readyState == 4) {
             // JSON.parse does not evaluate the attacker's scripts.
-            var resp = JSON.parse(XHR.responseText);
-            console.log(resp);
-            sortInbox(resp);
+            if (XHR.status === 200) {
+                var resp = JSON.parse(XHR.responseText);
+                console.log(resp);
+                sortInbox(resp);
+            } else {
+                document.getElementById("statusText").innerHTML="Error:"+XHR.statusText+" "+XHR.responseText;
+                console.log(XHR.responseText);
+            }
+
 
         }
     }
@@ -279,7 +286,7 @@ function sendData() {
  * @param {Array} theUnacceptables Array of domain names that the user does not want in their inbox
  */
 function sortInbox(theUnacceptables){
-    listMessages("me",".edu",10,function(response){
+    listMessages("me",".edu",100,function(response){
         console.log(response.messages);
         var messages=response.messages;
         for(var i=0;i<messages.length;i++){
@@ -303,6 +310,7 @@ function sortInbox(theUnacceptables){
 
             });
         }
+        document.getElementById("submit").disabled=false;
     });
 }
 /**
@@ -347,8 +355,7 @@ function getFromAddress(messageId,callback){
  */
 function moveToLabel(messageId){
     var label=getDestinationLabel();
-    console.log(messageId+" moved to "+label);
-    modifyMessage("me",messageId,new Array(label),new Array("INBOX"),function(){console.log(messageId+" moved to spam");});
+    modifyMessage("me",messageId,new Array(label),new Array("INBOX"),function(){console.log(messageId+" moved to "+label);});
 }
 function getDestinationLabel(){
     var selectList=document.getElementById("destination");

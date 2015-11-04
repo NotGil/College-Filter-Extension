@@ -1,3 +1,5 @@
+
+//creates an http request for information on a certain university
 function find(UniversityName,fn) {
 
     var xhr = new XMLHttpRequest();
@@ -6,7 +8,7 @@ function find(UniversityName,fn) {
     xhr.open("GET", url, true);
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
-            // JSON.parse does not evaluate the attacker's scripts.
+            // resp is the response from that request
             var resp = JSON.parse(xhr.responseText);
             console.log(resp);
             //if(resp[0].name==null) {
