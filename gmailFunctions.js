@@ -6,7 +6,7 @@
  * @param  {String} query String used to filter the Messages listed.
  * @param  {Function} callback Function to call when the request is complete.
  */
-function listMessages(userId, query, callback) {
+function listAllMessages(userId, query, callback) {
     var getPageOfMessages = function(request, result) {
         request.execute(function(resp) {
             result = result.concat(resp.messages);
@@ -26,6 +26,7 @@ function listMessages(userId, query, callback) {
     };
     var initialRequest = gapi.client.gmail.users.messages.list({
         'userId': userId,
+        'labelIds': "INBOX",
         'q': query
     });
     getPageOfMessages(initialRequest, []);

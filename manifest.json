@@ -1,14 +1,22 @@
 {
   "name": "College Email Filter",
-  "version": "0.1.1",
+  "version": "0.1.2.3",
   "description": "This extension moves emails from specified schools out of your inbox",
   "manifest_version": 2,
   "content_security_policy": "script-src 'self' https://apis.google.com; object-src 'self'",
   "browser_action": {
-    "default_icon": "icon.png",
+    "default_icon": {                    
+            "19": "icons/icon19.png",           
+            "38": "icons/icon38.png"            
+          },
     "default_popup": "popup.html",
     "default_title": "Basic Info"
   },
+  "icons": { "16": "icons/icon16.png",
+           "48": "icons/icon48.png",
+           "32": "icons/icon32.png",
+          "128": "icons/icon128.png" 
+          },
   "background": {
     "scripts": ["background.js"],
     "persistent": true
@@ -21,14 +29,14 @@
         "tabs",
         "storage",
         "identity",
-        "https://*.google.com/*",
+        "https://mail.google.com/*",
         "https://ssl.gstatic.com/",
         "https://www.googleapis.com/",
         "http://collegefilter.azurewebsites.net/",
         "https://accounts.google.com/"
     ],
   "oauth2": {
-        "client_id": "478849294151-rbla73lpg115hoq3aqb7dildkf7b7tge.apps.googleusercontent.com",
+        "client_id": "478849294151-5nis7b5oib8olueimqo4lvkar5lubokc.apps.googleusercontent.com",
         "scopes": [
             "https://mail.google.com/",
             "https://www.googleapis.com/auth/gmail.readonly",
