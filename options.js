@@ -64,7 +64,10 @@ document.getElementById('ACT').addEventListener('click',
 
 var numOfOptions=1;
 var submitButton=document.getElementById("submit");
-
+/**
+ * This method fills in the dropdown menu with the
+ * labels of the user
+ */
 function fillDestinationSelection(){
     listLabels("me",function(resp){
         var selectList=document.getElementById("destination");
@@ -81,6 +84,13 @@ function fillDestinationSelection(){
     });
 
 }
+/**
+ * Displays the appropriate input boxes and dropdowns menus depending
+ * on what the user selects from the criteria list
+ * @param whichOption {String} will be the value of the selection and id
+ * of the desired input
+ * @param index {Integer} is the index of the criteria selected
+ */
 function displayOption(whichOption,index){
 
     var parent=document.getElementById(whichOption);
@@ -203,22 +213,6 @@ option1.addEventListener('click',function(){
     }
 
 });
-function option2(){
-    var option2=document.getElementById("option 2");
-    var value2=null;
-    value2=option2.options[option2.selectedIndex].value;
-    var oldValue2=null;
-    option2.addEventListener('click',function(){
-        oldValue2=value2;
-        value2=option2.options[option2.selectedIndex].value;
-        if(value2!=oldValue2){
-            console.log("you changed the value of option 2 to: "+value2);
-            displayOption("second",option2.selectedIndex);
-        }
-
-    });
-}
-
 //catches the form submission event so it does not create a new window
 var form = document.getElementById('form');
 if (form.attachEvent) {
@@ -229,7 +223,8 @@ if (form.attachEvent) {
 function processForm(e) {
     if (e.preventDefault) e.preventDefault();
     if(validateForm()){
-        document.getElementById("submit").disabled=true;
+        //document.getElementById("submit").disabled=true;
+        //change status text to show inbox is being sorted
         sendData();
     }else{
         //displayError("Please Complete Form");
@@ -271,7 +266,6 @@ function validateForm(){
  *
  */
 function sendData() {
-    var XHR = new XMLHttpRequest();
     var urlEncodedData = "";
     var urlEncodedDataPairs = [];
     var name;
@@ -289,119 +283,12 @@ function sendData() {
     // We combine the pairs into a single string and replace all encoded spaces to
     // the plus character to match the behaviour of the web browser form submit.
     urlEncodedData = urlEncodedDataPairs.join('&').replace(/%20/g, '+');
-
-    // We define what will happen if the data is successfully sent
-    XHR.addEventListener('load', function(event) {
-        alert('Yeah! Data sent and response loaded.');
-    });
-
-    // We define what will happen in case of error
-    XHR.addEventListener('error', function(event) {
-        alert('Oops! Something goes wrong.');
-    });
-
-    // We setup our request
-    XHR.open('POST', 'http://collegefilter.azurewebsites.net/api/filter');
-    //XHR.open('POST', 'http://localhost:3000/api/filter');
-
-    // We add the required HTTP header to handle a form data POST request
-    XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-    // And finally, We send our data.
-    XHR.send(urlEncodedData);
-    XHR.onreadystatechange = function() {
-        if (XHR.readyState == 4) {
-            // JSON.parse does not evaluate the attacker's scripts.
-            if (XHR.status === 200) {
-                var resp = JSON.parse(XHR.responseText);
-                console.log(resp);
-                sortInbox(resp);
-            } else {
-                document.getElementById("statusText").innerHTML="Error:"+XHR.statusText+" "+XHR.responseText;
-                console.log(XHR.responseText);
-            }
-
-
-        }
-    }
-}
-/**
- * Gets a list of messages from the users inbox and checks if the messages are from the list
- * of unacceptables, if they are they are sent to the SPAM folder.
- *
- * @param {Array} theUnacceptables Array of domain names that the user does not want in their inbox
- */
-function sortInbox(theUnacceptables){
-    listAllMessages("me",".edu",function(response){
-        console.log(response);
-        var messages=response;
-        for(var i=0;i<messages.length;i++){
-            getFromAddress(messages[i].id,function(fromAddress,messageId){
-                if(fromAddress==null){
-                    console.log("do nothing with "+messageId);
-                }else{
-                    var flag=true;
-                    for(var w=0;w<theUnacceptables.length;w++){
-                        if(theUnacceptables[w].match("^"+fromAddress)!=null){ //if the from address is in the list of unwanted colleges dispose of it
-                            console.log(fromAddress+" does not pass the set criteria "+theUnacceptables[w]);
-                            getDestinationLabel();
-                            moveToLabel(messageId);
-                            flag=false;
-                        }
-                    }
-                    if(flag){
-                        console.log(fromAddress+" passes the set criteria");
-                    }
-                }
-
-            });
-        }
-        document.getElementById("submit").disabled=false;
-    });
-}
-/**
- * Get the from address from a message, if the address is in <name@domain.edu> format
- *
- * @param {String} messageId the ID of the message that you want a from address for
- * @param {Function} callback Function to call when the request is complete.
- */
-function getFromAddress(messageId,callback){
-    var request=gapi.client.gmail.users.messages.get({
-        'userId':'me',
-        'id':messageId,
-        'fields': 'payload'
-    });
-    request.execute(function(message){
-        var headers=message.payload.headers;
-        var regex=new RegExp('<.*@(.*.edu)>');
-        for(var i=0;i<headers.length;i++){
-            if (headers[i].name == 'From'){
-                //console.log("from header value: "+headers[i].value);
-                var match=regex.exec(headers[i].value);
-                //console.log("regex object: "+match);
-                //console.log(match[1]);
-                try{
-                    callback(match[1],messageId);
-                }
-                catch(e){
-                    if (e instanceof TypeError) {
-                        callback(null,messageId);
-                        console.log(e);
-                    }
-                }
-            }
-
+    chrome.extension.getBackgroundPage().getBlockedList(urlEncodedData,getDestinationLabel(),function(resp){
+        if(resp=="error"){
+            document.getElementById("statusText").innerHTML="There was an error";
         }
     });
-}
-/**
- * Moves the message from the Inbox to the folder that was selected prior
- *
- * @param {String} messageId ID of Message to send to the spam folder
- */
-function moveToLabel(messageId){
-    var label=getDestinationLabel();
-    modifyMessage("me",messageId,new Array(label),new Array("INBOX"),function(){console.log(messageId+" moved to "+label);});
+
 }
 function getDestinationLabel(){
     var selectList=document.getElementById("destination");

@@ -25,13 +25,6 @@ chrome.tabs.getSelected(null,function(tab){
     tablink = tab.url;
     console.log(tablink);
 });
-
-function dosomething(){
-    //modifyMessage("me","1505323804767de7",["Label_9"],[],function(response){
-    //    console.log(response);
-    //});
-    listMessages("me",".edu",50,function(response){console.log(response)});
-}
 function getFromAddress(){
     var messageId=getMessageIdFromUrl(tablink);
     var request=gapi.client.gmail.users.messages.get({
@@ -72,33 +65,36 @@ function getFromAddress(){
     });
 }
 function displayInfo(jsonObj){
-    document.getElementById('name').textContent = "Name: "+ jsonObj.name;
-    document.getElementById('location').textContent = "Location: " +jsonObj.city+","+jsonObj.state;
-    document.getElementById('description').textContent=formatDescription(jsonObj);
-    document.getElementById('admissionRate').textContent = "Admission Rate: "+jsonObj.percentAdmitted.total+"%";
-    chrome.storage.sync.get({
-        scores: 'SAT'
-    }, function(items) {
-        if(items.scores=='SAT'){
-            if(jsonObj.sat.math25thPercentileScore!=null)
-            document.getElementById('satm').textContent="SAT Math: "+jsonObj.sat.math25thPercentileScore+"-"+jsonObj.sat.math75thPercentileScore;
-            if(jsonObj.sat.reading25thPercentileScore!=null)
-            document.getElementById('satr').textContent="SAT Reading: "+jsonObj.sat.reading25thPercentileScore+"-"+jsonObj.sat.reading75thPercentileScore;
-            if(jsonObj.sat.writing25thPercentileScore!=null)
-            document.getElementById('satw').textContent="SAT Writing: "+jsonObj.sat.writing25thPercentileScore+"-"+jsonObj.sat.writing75thPercentileScore;
+    if(jsonObj==null){
+        errorScreen();
+    }else{
+        document.getElementById('name').textContent = "Name: "+ jsonObj.name;
+        document.getElementById('location').textContent = "Location: " +jsonObj.city+","+jsonObj.state;
+        document.getElementById('description').textContent=formatDescription(jsonObj);
+        document.getElementById('admissionRate').textContent = "Admission Rate: "+jsonObj.percentAdmitted.total+"%";
+        chrome.storage.sync.get({
+            scores: 'SAT'
+        }, function(items) {
+            if(items.scores=='SAT'){
+                if(jsonObj.sat.math25thPercentileScore!=null)
+                    document.getElementById('satm').textContent="SAT Math: "+jsonObj.sat.math25thPercentileScore+"-"+jsonObj.sat.math75thPercentileScore;
+                if(jsonObj.sat.reading25thPercentileScore!=null)
+                    document.getElementById('satr').textContent="SAT Reading: "+jsonObj.sat.reading25thPercentileScore+"-"+jsonObj.sat.reading75thPercentileScore;
+                if(jsonObj.sat.writing25thPercentileScore!=null)
+                    document.getElementById('satw').textContent="SAT Writing: "+jsonObj.sat.writing25thPercentileScore+"-"+jsonObj.sat.writing75thPercentileScore;
 
-        }else {
-            if(jsonObj.act.math25thPercentileScore!=null)
-            document.getElementById('satm').textContent="ACT Math: "+jsonObj.act.math25thPercentileScore+"-"+jsonObj.act.math75thPercentileScore;
-            if(jsonObj.act.english25thPercentileScore!=null)
-            document.getElementById('satr').textContent="ACT English: "+jsonObj.act.english25thPercentileScore+"-"+jsonObj.act.english75thPercentileScore;
-            if(jsonObj.act.writing25thPercentileScore!=null)
-            document.getElementById('satw').textContent="ACT Writing: "+jsonObj.act.writing25thPercentileScore+"-"+jsonObj.act.writing75thPercentileScore;
-            if(jsonObj.act.composite25thPercentileScore!=null)
-            document.getElementById('actComposite').textContent="ACT Composite: "+jsonObj.act.composite25thPercentileScore+"-"+jsonObj.act.composite75thPercentileScore;
-        }
-    });
-
+            }else {
+                if(jsonObj.act.math25thPercentileScore!=null)
+                    document.getElementById('satm').textContent="ACT Math: "+jsonObj.act.math25thPercentileScore+"-"+jsonObj.act.math75thPercentileScore;
+                if(jsonObj.act.english25thPercentileScore!=null)
+                    document.getElementById('satr').textContent="ACT English: "+jsonObj.act.english25thPercentileScore+"-"+jsonObj.act.english75thPercentileScore;
+                if(jsonObj.act.writing25thPercentileScore!=null)
+                    document.getElementById('satw').textContent="ACT Writing: "+jsonObj.act.writing25thPercentileScore+"-"+jsonObj.act.writing75thPercentileScore;
+                if(jsonObj.act.composite25thPercentileScore!=null)
+                    document.getElementById('actComposite').textContent="ACT Composite: "+jsonObj.act.composite25thPercentileScore+"-"+jsonObj.act.composite75thPercentileScore;
+            }
+        });
+    }
 }
 function formatDescription(j){
     //A large 4 year college located in a large city setting

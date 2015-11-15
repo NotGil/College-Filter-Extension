@@ -18,7 +18,7 @@
           "128": "icons/icon128.png" 
           },
   "background": {
-    "scripts": ["background.js"],
+    "page": "background.html",
     "persistent": true
   },
   "options_ui": {
@@ -36,7 +36,7 @@
         "https://accounts.google.com/"
     ],
   "oauth2": {
-        "client_id": "478849294151-5nis7b5oib8olueimqo4lvkar5lubokc.apps.googleusercontent.com",
+        "client_id": "478849294151-hdlj3pva08ul0g52a96nd8eqfaf22c6a.apps.googleusercontent.com",
         "scopes": [
             "https://mail.google.com/",
             "https://www.googleapis.com/auth/gmail.readonly",
