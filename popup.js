@@ -18,51 +18,76 @@ function getHashFromUrl(url) {
 }
 var getMessageIdFromUrl = function (url) {
     var hash = getHashFromUrl(url);
+    //console.log(hash);
     return hash.substr(hash.lastIndexOf("/") + 1);
 };
 var tablink;
+var isGmail;
 chrome.tabs.getSelected(null,function(tab){
     tablink = tab.url;
+    if(tablink.match("mail.google.com")){
+        console.log("this is gmail");
+        isGmail=true;
+    }
+    else{
+        console.log("this is not gmail");
+        isGmail=false;
+    }
     console.log(tablink);
 });
 function getFromAddress(){
-    var messageId=getMessageIdFromUrl(tablink);
-    var request=gapi.client.gmail.users.messages.get({
-        'userId':'me',
-        'id':messageId,
-        'fields': 'payload'
-    });
-    request.execute(function(message){
-        var headers=message.payload.headers;
-        var regex=new RegExp('.*@(.*).edu');
-        for(var i=0;i<headers.length;i++){
-             if (headers[i].name == 'From'){
-                 console.log(headers[i].value);
-                 var match=regex.exec(headers[i].value);
-                 console.log(match);
-                 console.log(match[1]);
-                 if(match[1].indexOf(".")!=-1){
-                     var temp=match[1].split("\.")[1];
-                     console.log(temp);
-                     chrome.extension.getBackgroundPage().find(temp,function(r){
-                         displayInfo(r);
-                         console.log(r);
+    if(isGmail){
+        var messageId=getMessageIdFromUrl(tablink);
 
-                     });
-                 }else{
-                     chrome.extension.getBackgroundPage().find(match[1],function(r){
-                         displayInfo(r);
-                         console.log(r);
+        var request=gapi.client.gmail.users.messages.get({
+            'userId':'me',
+            'id':messageId,
+            'fields': 'payload'
+        });
+        request.execute(function(message){
 
-                     });
-                 }
+            if(message.payload==null){
+                if(message.message=="Invalid id value"){
+                    tutorialze();
+                }
+            }else{
+                var headers=message.payload.headers;
+                var regex=new RegExp('.*@(.*).edu');
+                for(var i=0;i<headers.length;i++){
+                    if (headers[i].name == 'From'){
+                        console.log(headers[i].value);
+                        var match=regex.exec(headers[i].value);
+                        console.log(match);
+                        console.log(match[1]);
+                        if(match[1].indexOf(".")!=-1){
+                            var temp=match[1].split("\.")[1];
+                            console.log(temp);
+                            chrome.extension.getBackgroundPage().find(temp,function(r){
+                                displayInfo(r);
+                                console.log(r);
+
+                            });
+                        }else{
+                            chrome.extension.getBackgroundPage().find(match[1],function(r){
+                                displayInfo(r);
+                                console.log(r);
+
+                            });
+                        }
 
 
 
-             }
-                 
-         }
-    });
+                    }
+
+                }
+            }
+
+        });
+    }
+    else{
+        redirectToGmail();
+    }
+
 }
 function displayInfo(jsonObj){
     if(jsonObj==null){
@@ -114,6 +139,25 @@ function formatDescription(j){
 function errorScreen(){
     document.getElementById('header').textContent="Error";
     document.getElementById('name').textContent="Could not find college";
+    document.getElementById('description').textContent="";
+}
+function redirectToGmail(){
+    document.getElementById('header').textContent="This popup is to be used when viewing\
+    an email from a prospective college";
+    document.getElementById('name').innerHTML="You can head over to <a id='gmailLink' href='#'>Gmail</a> to start using\
+    this extension or you can go to the options page to sort your inbox";
+    document.getElementById('description').textContent="";
+    document.querySelector('#gmailLink').addEventListener("click",function() {
+
+        console.log("this was click");
+        window.open("http://mail.google.com");
+    });
+}
+function tutorialze(){
+    document.getElementById('header').textContent="There seems to be an error";
+    document.getElementById('name').innerHTML="<p style=\"font-size:130%\">It looks like you are trying to use the basic info button\
+    while not viewing an email from a college.<br> To fix this click on email.</p><p> Or you can go to the options\
+    page if that's what you were looking for</p>";
     document.getElementById('description').textContent="";
 }
 document.querySelector('#go-to-options').addEventListener("click",function() {
